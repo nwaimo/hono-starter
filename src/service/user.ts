@@ -1,4 +1,4 @@
-import { encrypt } from '../lib/encryption.js';
+import { hash } from '../lib/encryption.js';
 import type { UserRepository } from '../repository/user.js';
 
 export class UserService {
@@ -12,7 +12,7 @@ export class UserService {
   }
 
   public async create(name: string, email: string, password: string) {
-    const hashedPassword = encrypt(password);
+    const hashedPassword = await hash(password);
     await this.repo.create({ name, email, password: hashedPassword });
   }
 

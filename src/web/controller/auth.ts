@@ -1,6 +1,7 @@
 import type { Context } from 'hono';
 import { DB_ERRORS, type DatabaseError } from '../../db/database.js';
 import { verify } from '../../lib/encryption.js';
+
 import { type JWTPayload, encode } from '../../lib/jwt.js';
 import type { UserService } from '../../service/user.js';
 import sendWelcomeEmailAsync from '../../task/client/sendWelcomeEmailAsync.js';
@@ -26,7 +27,7 @@ export class AuthController {
     if (!user) {
       return serveUnauthorized(c);
     }
-    const isVerified = verify(body.password, user.password);
+    const isVerified = await verify(body.password, user.password);
     if (!isVerified) {
       return serveUnauthorized(c);
     }
@@ -60,7 +61,7 @@ export class AuthController {
   }
 
   public async me(c: Context) {
-    const payload: JWTPayload = c.get('jwtPayload');
+    const payload = c.get('jwtPayload') as JWTPayload;
     const user = await this.service.findByEmail(payload.email as string);
     if (!user) {
       return serveNotFound(c, ERRORS.USER_NOT_FOUND);

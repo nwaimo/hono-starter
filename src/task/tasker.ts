@@ -2,6 +2,7 @@ import { type Job, Worker } from 'bullmq';
 import { logger } from '../lib/logger.js';
 import { QUEUE, connection } from '../lib/queue.js';
 import type { UserService } from '../service/user.js';
+import { SCHEDULED_TASKS } from './scheduler.js';
 import sendWelcomeEmail from './sendWelcomeEmail.js';
 
 const TASK = {
@@ -44,6 +45,11 @@ class Tasker {
     switch (job.name) {
       case TASK.SendWelcomeEmail: {
         await sendWelcomeEmail(job.data, this.userService);
+        break;
+      }
+      case SCHEDULED_TASKS.CleanupExpiredSessions: {
+        logger.info('Running scheduled cleanup task');
+        // Add your cleanup logic here
         break;
       }
     }

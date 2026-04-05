@@ -1,13 +1,13 @@
 import type { Logger as drizzleLogger } from 'drizzle-orm/logger';
-import { drizzle } from 'drizzle-orm/mysql2';
-import mysql from 'mysql2/promise';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import * as schema from './schema/schema.js';
 import type { userSchema } from './schema/schema.js';
 import env from '../lib/env.js';
 import { logger } from '../lib/logger.js';
 
 const DB_ERRORS = {
-  DUPLICATE_KEY: 'ER_DUP_ENTRY',
+  DUPLICATE_KEY: '23505',
 };
 
 export interface DatabaseError {
@@ -30,12 +30,13 @@ class DBLogger implements drizzleLogger {
   }
 }
 
-const connection = await mysql.createConnection({
+const connection = postgres({
   host: env.DB_HOST,
+  port: env.DB_PORT,
   user: env.DB_USER,
   password: env.DB_PASSWORD,
   database: env.DB_NAME,
 });
 
-const db = drizzle(connection, { schema: schema, mode: 'default', logger: new DBLogger() });
+const db = drizzle(connection, { schema: schema, logger: new DBLogger() });
 export { DB_ERRORS, connection, db };

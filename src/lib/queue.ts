@@ -1,17 +1,12 @@
 import { Queue } from 'bullmq';
-import IORedis from 'ioredis';
-import env from './env.js';
+import { redis } from './redis.js';
 
 const QUEUE = {
   default: 'default',
 };
 
-const connection = new IORedis.default({
-  port: Number.parseInt(env.REDIS_PORT),
-  host: env.REDIS_HOST,
-  maxRetriesPerRequest: null,
-});
-// Reuse the ioredis instance
+// Reuse the shared redis instance
+const connection = redis;
 const defaultQueue = new Queue(QUEUE.default, {
   connection,
   defaultJobOptions: {

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 import { userSchema } from '../db/schema/schema.js';
 import { db, type NewUser } from '../db/database.js';
 
@@ -17,5 +17,13 @@ export class UserRepository {
     return db.query.userSchema.findFirst({
       where: eq(userSchema.email, email),
     });
+  }
+
+  public async findAll(limit: number, offset: number) {
+    const [users, total] = await Promise.all([
+      db.select().from(userSchema).limit(limit).offset(offset),
+      db.select({ count: count() }).from(userSchema),
+    ]);
+    return { users, total: total[0].count };
   }
 }

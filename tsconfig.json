@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
     "strict": true,
     "skipLibCheck": true,
-    "types": ["node"],
+    "types": ["bun-types"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "outDir": "./dist"
